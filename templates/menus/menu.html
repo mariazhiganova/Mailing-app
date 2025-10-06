@@ -1,0 +1,57 @@
+{% load auth_extras %}
+
+<header class="border-bottom py-3 bg-white rounded-top">
+    <div class="container-fluid px-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="me-5">
+                <h1 class="fw-bold m-0 site-title"
+                    style="font-family: 'Inter', sans-serif; font-size: 1.8rem; color: #000; letter-spacing: -0.5px;">
+                    MAILFLOW
+                </h1>
+            </div>
+
+            <nav class="d-flex gap-4 mx-auto">
+                {% if user.is_authenticated %}
+                {% if not request.user|has_group:"Managers" %}
+                <a href="{% url 'mail_flow:main' %}"
+                   class="text-decoration-none text-dark fw-medium py-2 px-3 rounded hover-effect">Главная</a>
+                {% endif %}
+                <a href="{% url 'mail_flow:mailings_list' %}"
+                   class="text-decoration-none text-dark fw-medium py-2 px-3 rounded hover-effect">Рассылки</a>
+                <a href="{% url 'mail_flow:recipients_list' %}"
+                   class="text-decoration-none text-dark fw-medium py-2 px-3 rounded hover-effect">Получатели</a>
+                {% if not request.user|has_group:"Managers" %}
+                <a href="{% url 'mail_flow:messages_list' %}"
+                   class="text-decoration-none text-dark fw-medium py-2 px-3 rounded hover-effect">Сообщения</a>
+                <a href="{% url 'mail_flow:reports' %}"
+                   class="text-decoration-none text-dark fw-medium py-2 px-3 rounded hover-effect">Отчеты</a>
+                {% endif %}
+                {% if perms.users.can_view_users %}
+                <a href="{% url 'mail_flow:users_list' %}"
+                   class="text-decoration-none text-dark fw-medium py-2 px-3 rounded hover-effect">Все пользователи</a>
+                {% endif %}
+                {% endif %}
+            </nav>
+            {% if user.is_authenticated %}
+            <div class="d-flex gap-2 ms-auto">
+                <a href="{% url 'users:profile' %}"
+                   class="btn btn-link nav-link">👤 Профиль</a>
+                <span class="text-muted align-self-center">|</span>
+                <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-link nav-link">Выйти</button>
+                </form>
+            </div>
+            {% else %}
+            <div class="d-flex gap-2 ms-auto">
+                <a href="{% url 'users:login' %}"
+                   class="text-decoration-none text-dark fw-medium py-2 px-3 rounded hover-effect">Вход</a>
+                <span class="text-muted align-self-center">|</span>
+                <a href="{% url 'users:register' %}"
+                   class="text-decoration-none text-dark fw-medium py-2 px-3 rounded hover-effect">Регистрация</a>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</header>

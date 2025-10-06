@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body p-5 text-center">
+                    {% if confirmation %}
+                    <h2 class="mb-4">Подтверждение Email</h2>
+                    <p>Подтвердите email: <strong>{{ confirmation.email_address.email }}</strong></p>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-lg">Подтвердить Email</button>
+                    </form>
+                    {% else %}
+                    <h2 class="mb-4">Ошибка</h2>
+                    <div class="alert alert-warning">
+                        <p>Ссылка для подтверждения недействительна или устарела.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

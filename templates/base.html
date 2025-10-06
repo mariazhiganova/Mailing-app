@@ -1,0 +1,39 @@
+{% load auth_extras %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Mail Flow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+
+<body>
+{% include 'menus/menu.html' %}
+
+<main class="container-fluid px-0">
+    {% block page_header %}
+    {% endblock %}
+
+    {% block content %}
+    {% endblock %}
+
+    <section class="section text-center" id="buttons">
+        {% if not request.user|has_group:"Managers" %}
+        <a href="{% url 'mail_flow:recipient_form' %}" class="btn btn-primary btn-custom mx-2 mb-3">Добавить
+            получателя</a>
+        <a href="{% url 'mail_flow:mailing_form' %}" class="btn btn-primary btn-custom mx-2 mb-3">Добавить рассылку</a>
+        <a href="{% url 'mail_flow:message_form' %}" class="btn btn-primary btn-custom mx-2 mb-3">Добавить сообщение</a>
+        {% endif %}
+    </section>
+</main>
+
+<footer class="text-center rounded mt-4 shadow-sm">
+    <p class="mb-0">© 2025 Mail Flow. Все права защищены.</p>
+</footer>
+
+</body>
+</html>
