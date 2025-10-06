@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load auth_extras %}
+
+{% block page_header %}
+<div class="page-header py-4">
+    <div class="container">
+        <h1 class="text-center">
+            Список получателей
+        </h1>
+        <p class="text-center text-muted">Всего получателей: {{ recipients|length }}</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="section" id="features">
+    <div class="row g-4 justify-content-center">
+        {% for recipient in recipients %}
+        {% if request.user|has_group:"Managers" or recipient.owner == request.user %}
+        <div class="col-md-4">
+            <div class="content-block h-100">
+                <h3 class="mb-3">{{ recipient.full_name }}</h3>
+                <p>{{ recipient.email }}</p>
+                <p>{{ recipient.comment }}</p>
+                {% if not request.user|has_group:"Managers" %}
+                <a href="{% url 'mail_flow:recipient_update' recipient.pk %}"
+                   class="btn btn-light btn-custom">Изменить</a>
+                <a href="{% url 'mail_flow:recipient_delete' recipient.pk %}"
+                   class="btn btn-light btn-custom">Удалить</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

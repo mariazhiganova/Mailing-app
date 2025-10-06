@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block page_header %}
+<div class="page-header py-4">
+    <div class="container">
+        <h1>Блокировка пользователя</h1>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            <form method="post" action="{% url 'mail_flow:block_user' user.pk %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                {% if user.is_blocked %}
+                <p class="card-text">Действительно ли вы хотите разблокировать пользователя "{{ user.email }}"?</p>
+                <button class="btn btn-warning">Разблокировать</button>
+                {% else %}
+                <p class="card-text">Действительно ли вы хотите заблокировать пользователя "{{ user.email }}"?</p>
+                <button class="btn btn-warning">Заблокировать</button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

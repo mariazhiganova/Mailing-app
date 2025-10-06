@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block page_header %}
+<div class="page-header py-4">
+    <div class="container">
+        <h1 class="text-center">Список всех пользователей</h1>
+        <p class="text-center text-muted">Всего пользователей: {{ users|length }}</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="section" id="features">
+    <div class="row g-4 justify-content-center">
+        {% for user in users %}
+        <div class="col-md-4">
+            <div class="content-block h-100">
+                <h5 class="mb-2">Пользователь:</h5>
+                <p class="small text-break mb-3" style="word-wrap: break-word;">
+                    {{ user.email }}
+                </p>
+
+                {% if user.first_name or user.last_name %}
+                <p class="mb-2">
+                    {% if user.first_name %}{{ user.first_name }}{% endif %}
+                    {% if user.last_name %}{{ user.last_name }}{% endif %}
+                </p>
+                {% endif %}
+                {% if user.id == request.user.id %}
+                <p class="mb-2">
+                    <span class="badge bg-primary">Это вы!</span>
+                </p>
+                {% endif %}
+                <p class="mb-2">
+                    <span class="badge {% if user.is_blocked %}bg-danger{% else %}bg-success{% endif %}">
+                        {% if user.is_blocked %}Заблокирован{% else %}Активен{% endif %}
+                    </span>
+                </p>
+
+                {% if perms.users.can_block_user and not user.id == request.user.id%}
+                <a href="{% url 'mail_flow:block_user_confirm' user.pk %}"
+                   class="btn {% if user.is_blocked %}btn-success{% else %}btn-warning{% endif %} btn-sm">
+                    {% if user.is_blocked %}Разблокировать{% else %}Заблокировать{% endif %}
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

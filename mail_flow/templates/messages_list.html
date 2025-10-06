@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block page_header %}
+<div class="page-header py-4">
+    <div class="container">
+        <h1 class="text-center">
+            Список сообщений
+        </h1>
+        <p class="text-center text-muted">Всего рассылок: {{ messages|length }}</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="section" id="features">
+    <div class="row g-4 justify-content-center">
+        {% for message in messages %}
+        {% if message.owner == request.user %}
+        <div class="col-md-4">
+            <div class="content-block h-100">
+                <h3 class="mb-3">{{ message.subject }}</h3>
+                <p>{{ message.body }}</p>
+                <a href="{% url 'mail_flow:message_update' message.pk %}" class="btn btn-light btn-custom">Изменить</a>
+                <a href="{% url 'mail_flow:message_delete' message.pk %}" class="btn btn-light btn-custom">Удалить</a>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

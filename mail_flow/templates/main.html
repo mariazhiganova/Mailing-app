@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load auth_extras %}
+
+{% block page_header %}
+<div class="page-header py-4">
+    <div class="container">
+        {% if not request.user|has_group:"Managers" %}
+        <h1 class="text-center">
+            Главная страница
+        </h1>
+        {% if user.is_authenticated and user.first_name %}
+        <h4 class="text-center">Добро пожаловать, {{ user.first_name }}!</h4>
+        {% else %}
+        <h4 class="text-center">Добро пожаловать в сервис по созданию рассылок!</h4>
+        {% endif %}
+        {% else %}
+        <h1 class="text-center">
+            Менеджер, добро пожаловать!
+        </h1>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+{% if not request.user|has_group:"Managers" %}
+<section class="section" id="statistics">
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-4">
+            <div class="content-block h-100 text-center">
+                <h3 class="text-primary">{{ total_mailings }}</h3>
+                <p class="fs-5">Всего рассылок</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="content-block h-100 text-center">
+                <h3 class="text-success">{{ active_mailings }}</h3>
+                <p class="fs-5">Активных рассылок</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="content-block h-100 text-center">
+                <h3 class="text-info">{{ unique_recipients }}</h3>
+                <p class="fs-5">Уникальных получателей</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="recent-attempts">
+    <h3 class="text-center mb-4">Ваши попытки рассылок</h3>
+    <div class="row g-4 justify-content-center">
+        {% for attempt in mailing_attempt %}
+        <div class="col-md-4">
+            <div class="content-block h-100">
+                <h4 class="mb-3">Рассылка "{{ attempt.mailing.message.subject }}"</h4>
+                <p><strong>Статус:</strong> {{ attempt.status }}</p>
+                <p><strong>Время:</strong> {{ attempt.start_time }}</p>
+                <p><strong>Ответ сервера:</strong> {{ attempt.post_response|truncatewords:10 }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="content-block text-center">
+                <p>Попыток рассылок пока нет</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% else %}
+<p>Доступные вам действия находятся в панели сверху</p>
+{% endif %}
+{% endblock %}

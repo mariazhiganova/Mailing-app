@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block page_header %}
+<div class="page-header py-4">
+    <div class="container">
+        <h1>Удаление получателя</h1>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <p class="card-text">Действительно ли вы хотите удалить сообщение c темой "{{ message.subject }}"?
+                    Удаление невозвратно</p>
+                <button type="submit" class="btn btn-primary">
+                    Удалить
+                </button>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
