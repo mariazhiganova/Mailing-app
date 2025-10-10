@@ -14,9 +14,27 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import os
+
+from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.shortcuts import redirect
+from django.urls import path, include
+
+from config import settings
+from config.settings import BASE_DIR
+from users.views import CustomPasswordChangeView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/password/change/', CustomPasswordChangeView.as_view()),
+    path('accounts/', include('allauth.urls')),
+    path('', lambda request: redirect('/mail_flow/')),
+    path('mail_flow/', include('mail_flow.urls', namespace='mail_flow')),
+
+    path('users/', include('users.urls', namespace='users')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=os.path.join(BASE_DIR, 'static'))

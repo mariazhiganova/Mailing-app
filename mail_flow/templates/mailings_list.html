@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load auth_extras %}
+
+{% block page_header %}
+<div class="page-header py-4">
+    <div class="container">
+        <h1 class="text-center">
+            Мои рассылки
+        </h1>
+        <p class="text-center text-muted">Всего рассылок: {{ mailings|length }}</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="section" id="features">
+    <div class="row g-4 justify-content-center">
+        {% for mailing in mailings %}
+        {% if request.user|has_group:"Managers" or mailing.owner == request.user %}
+        <div class="col-md-4">
+            <div class="content-block h-100">
+                <h4 class="mb-3">Рассылка "{{ mailing.message }}"</h4>
+                <p>Время начала рассылки: {{ mailing.start_time }}</p>
+                <p>Время окончания рассылки: {{ mailing.end_time }}</p>
+                <p>Статус: {{ mailing.status }}</p>
+                <span class="badge {% if mailing.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+                            {% if mailing.is_active %}Активна{% else %}Отключена{% endif %}
+                </span>
+                <h5>Получатели:</h5>
+                <ul>
+                    {% for recipient in mailing.recipients.all %}
+                    <li>{{ recipient }}</li>
+
+                    {% endfor %}
+                </ul>
+                <div class="d-flex flex-column gap-2">
+                    {% if not request.user|has_group:"Managers" and mailing.owner == request.user %}
+                    <form action="{% url 'mail_flow:mailing_attempt' mailing.pk %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary w-100">Запустить рассылку</button>
+                    </form>
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'mail_flow:mailing_update' mailing.pk %}"
+                           class="btn btn-light btn-sm flex-fill">Изменить</a>
+                        <a href="{% url 'mail_flow:mailing_delete' mailing.pk %}"
+                           class="btn btn-light btn-sm flex-fill">Удалить</a>
+                    </div>
+                    {% endif %}
+                    {% if perms.mail_flow.can_disable_mailing %}
+                    <form action="{% url 'mail_flow:toggle_mailing' mailing.pk %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button class="btn {% if mailing.is_active %}btn-danger{% else %}btn-success{% endif %} btn-sm w-100">
+                            {% if mailing.is_active %}Отключить{% else %}Включить{% endif %}
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

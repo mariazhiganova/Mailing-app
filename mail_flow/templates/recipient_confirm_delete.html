@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block page_header %}
+<div class="page-header py-4">
+    <div class="container">
+        <h1>Удаление получателя</h1>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Удаление получателя</h1>
+    <div class="row">
+        <div class="col-4">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+              <p class="card-text">Действительно ли вы хотите удалить получателя {{ recipient.name }}? Удаление невозвратно</p>
+                <button type="submit" class="btn btn-primary">
+                    Удалить
+                </button>
+                <a href="{% url 'mail_flow:recipients_list' %}" class="btn btn-secondary">Отмена</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
